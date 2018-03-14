@@ -1,0 +1,60 @@
+<html>
+    <body>
+    <font face="Verdana">
+        <h1 align="center">stdGFX - The standard C graphics library</h1>
+    
+    <h3 align="right">ver. 0.1 (March 2018)</h3>
+    <h2>I. Introduction</h2>
+    <p>
+        Welcome to the stdGFX documentation page! This HTML page servers as a reference to the stdGFX library. A lot of
+        effort has been ensured to make the documentation as error-free as possible. If errors still persist in this documentation,
+        don't hesistate to contact the project developer! The documentation is hand-written, so don't expect it to be perfect
+        nor to be completely killed by mechanization!
+    </p>
+    <h2>II. Philosophy</h2>
+    <p>
+        This project aims to accomplish what the C standard never did, or never bothered to. The standard C library,
+        has quite a lot of features but is still lacking when it comes to handling graphical tasks. A programmer is then
+        forced to use one of several libraries (SDL, OpenGL, Qt, ...) to name a few. This may not be a very difficult task
+        for an experienced programmer, but for beginners, it is quite offputting. stdgfx aims to fix that. Programs immediately
+        launch into graphical mode (rather than setting the mode manually) as the <i>main</i> function is replaced by the gfx analogue
+        <i>gfx_main</i>. The library aims to be simplistic, and provide features that are basic but essential. <br><br>
+
+        Currently, of course, the library has been implemented as a frontend for SDL. The project is still in the proof of concept stage,
+        and massive changes might still just be underway.
+    </p>
+    <h2>III. An example</h2>
+    <p>
+        A graphical "Hello World" example is as follows:
+        <pre>
+            int gfx_main(int argc, char** argv)
+            {
+                gfx_printf("Hello, World!\n");
+                return 0;
+            }
+        </pre>
+        
+        The output is done through a standard <i>8 x 8</i> bitmap font, an exampe on a Windows 7 system is shown:
+        <img src="img01.jpg">
+    </p>
+
+    <h2>IV. Services</h2>
+
+    <h3 align="left">int gfx_init(void)</h3>
+    <b>description</b>: Initializae the GFX library (note: this must be called by the implementation's main and should not be used by the program!)<br>
+    <b>arguments:</b>: none.<br>
+    <b>return value:</b> reserved<br>
+
+    <h3 align="left">void gfx_ok(int test, const char* fmt, ...);</h3>
+    <b>description</b>: if <i>test</i> evaluates to 1, shutdown, and exit with <i>EXIT_FAILURE</i>, printing message given by <i>fmt</i> to <i>stderr</i> otherwise return<br>
+    <b>arguments:</b>: an expression as <i>test</i>, <i>fmt</i> as format, exactly how you would pass to <b>printf</b><br>
+    <b>return value:</b>none<br>
+
+    <h3 align="left">void			gfx_resize(int w, int h, int bpp);</h3>
+    <b>description</b>: resize the output window to a newer resolution given by <i>w</i> x <i>h</i> x <i>bpp</i><br>
+    <b>arguments:</b>: <i>w</i> - newer screen width, <i>h</i> - newer screen height, <i>bpp</i> - bits per pixel, 32 is to be accepted, other values are implementation defined.</b><br>
+    <b>return value:</b> none<br>
+
+    </body>
+    </font>
+</html>
