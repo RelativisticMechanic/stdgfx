@@ -30,4 +30,4 @@ SHOTS
 ---
 
 ![Screenshot](shot2.jpg)
-![Screenshot](lenna.jpg)
+![Screenshot](scrot.png)
