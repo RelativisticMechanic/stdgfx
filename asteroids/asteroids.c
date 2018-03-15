@@ -4,14 +4,21 @@
 #include <stdgfx.h>
 
 #define pScale 1
-#define pA 0.001f
-#define pVel_max 0.4f
+#define pA 90.0f
+#define pVel_max 300.0f
+#define pVel_theta 3.0f
+
 #define stMax 256
 // Asteroid properties
 #define aVerts 20
 #define aRadius 80.0f
-#define bSize 5
-#define bVel 1.0f
+#define aVel_min 20.0f
+#define aVel_max 60.0f
+
+#define bSize 2
+#define bVel pVel_max * 2
+// 200 millisecond difference between shots
+#define shot_interval 200.0f
 
 bool game_started = false;
 
@@ -222,8 +229,23 @@ void reset_game(void)
     pVel_x = 0.01f;
     pVel_y = 0.0f;
     pTheta = 0.01f;
+    int old_score = score;
+    score = 0;
+    // Game over man
+    while(true)
+    {
+        gfx_clear(0,0,0,0);
+        gfx_text_cursor(gfx_terminal_max_x / 2 - 25, gfx_terminal_max_y / 2);
+        gfx_printf("Game over, your score: %d, press CTRL to continue", old_score);
+        if(gfx_iskey(GFX_CTRL))
+        {
+            gfx_clear(0,0,0,0);
+            gfx_update(); // Refresh input buffer
+            return;
+        }
+        gfx_update();
+    }
 }
-
 int gfx_main(int argc, char** argv)
 {
     gfx_resize(800, 600, 32);
@@ -244,14 +266,19 @@ int gfx_main(int argc, char** argv)
         starY[i] = random_range(0, gfx_height);
     }
     uint32_t shoot_timer = gfx_ticks();
-    add_asteroid(20, 25, 80, 0.05f, 0.03f);
+    double game_timer = (double)gfx_ticks() / 1000.0f;
+    double time_elapsed = 0;
+    add_asteroid(20, 25, 80, random_sign()*random_range(aVel_min, aVel_max), random_sign()*random_range(aVel_min, aVel_max));
+
     while(true)
     {
+        time_elapsed = (gfx_ticks() / 1000.0f) - game_timer;
+        game_timer = gfx_ticks() / 1000.0f;
+
         gfx_clear(0, 0, 0, 0);
 
         if(!game_started)
         {
-            gfx_circle(500, 500, 20, 0xff, 0xff, 0xff, 0xff);
             gfx_draw_image(logo, gfx_width/2 - 128, gfx_height/2 - 128 , 256, 256);
             gfx_text_cursor(gfx_terminal_max_x / 2 - 8, gfx_terminal_max_y / 2 - 20);
             gfx_printf("GFXDROIDS 0.1\n");
@@ -268,28 +295,28 @@ int gfx_main(int argc, char** argv)
         // Calculate the vertices of the triangle
         if(gfx_iskey(GFX_D))
         {
-            pTheta += 0.01f;
+            pTheta += pVel_theta * time_elapsed;
         }
         if(gfx_iskey(GFX_A))
         {
-            pTheta -= 0.01f;
+            pTheta -= pVel_theta * time_elapsed;
         }
 
         if(gfx_iskey(GFX_W))
         {
-            pVel_x += pA*sin(pTheta);
-            pVel_y -= pA*cos(pTheta);
+            pVel_x += pA*sin(pTheta)*time_elapsed;
+            pVel_y -= pA*cos(pTheta)*time_elapsed;
         }
 
         if(gfx_iskey(GFX_S))
         {
-            pVel_x -= pA*sin(pTheta);
-            pVel_y += pA*cos(pTheta);
+            pVel_x -= pA*sin(pTheta)*time_elapsed;
+            pVel_y += pA*cos(pTheta)*time_elapsed;
         }
 
         if(gfx_iskey(GFX_SPACE))
         {
-            if(gfx_elapsed(shoot_timer) > 100.0f)
+            if(gfx_elapsed(shoot_timer) > shot_interval)
             {
                 shoot_timer = gfx_ticks();
                 add_bullet(pX, pY, bVel * sin(pTheta), -bVel * cos(pTheta));
@@ -302,8 +329,8 @@ int gfx_main(int argc, char** argv)
         if(fabs(pVel_y) >= pVel_max)
             pVel_y = signum(pVel_y)*pVel_max;
         
-        pX += pVel_x;
-        pY += pVel_y;
+        pX += pVel_x * time_elapsed;
+        pY += pVel_y * time_elapsed;
 
         if(pX >= gfx_width) 
             pX -= gfx_width;
@@ -327,8 +354,8 @@ int gfx_main(int argc, char** argv)
             
             gfx_pixel(starX[i], starY[i], 0xFF, 0xFF, 0xFF, 0xFF);
             // Make the star move with the player
-            starX[i] += -pVel_x;
-            starY[i] += -pVel_y;
+            starX[i] += -pVel_x * time_elapsed;
+            starY[i] += -pVel_y * time_elapsed;
         }
 
         // Draw asteroids and check for collision
@@ -400,8 +427,8 @@ int gfx_main(int argc, char** argv)
 
                 if(asteroids[i].active == 0) continue;
 
-                asteroids[i].x += asteroids[i].vx;
-                asteroids[i].y += asteroids[i].vy;
+                asteroids[i].x += asteroids[i].vx * time_elapsed;
+                asteroids[i].y += asteroids[i].vy * time_elapsed;
 
                 if(asteroids[i].x >= gfx_width)
                     asteroids[i].x -= gfx_width;
@@ -429,8 +456,8 @@ int gfx_main(int argc, char** argv)
             if(bullets[i].active == 1)
             {
                 gfx_circle(bullets[i].x, bullets[i].y, bSize, 0xFF, 0xFF, 0x00, 0xFF);
-                bullets[i].x += bullets[i].vx;
-                bullets[i].y += bullets[i].vy;
+                bullets[i].x += bullets[i].vx * time_elapsed;
+                bullets[i].y += bullets[i].vy * time_elapsed;
                 
                 if(bullets[i].x >= gfx_width || bullets[i].y >= gfx_height || bullets[i].x < 0 || bullets[i].y < 0)
                     remove_bullet(i);
@@ -439,10 +466,10 @@ int gfx_main(int argc, char** argv)
         // Respawn asteroids
         if(count_asteroids() == 0)
         {
-            int to_add = random_range(1, 4);
+            int to_add = random_range(1, 5);
             for(int i = 0; i < to_add; i++)
             {
-                add_asteroid(abs(gfx_width - random_range(0, 20)), abs(gfx_height - random_range(0, 20)), aRadius + random_sign()*random_range(0, 4), random_sign()*0.05f, random_sign()*0.05f); 
+                add_asteroid(abs(gfx_width - random_range(0, 20)), abs(gfx_height - random_range(0, 20)), aRadius + random_sign()*random_range(0, 4), random_sign()*random_range(aVel_min, aVel_max), random_sign()*random_range(aVel_min, aVel_max)); 
             }
         }
         // Draw the player finally
@@ -454,7 +481,7 @@ int gfx_main(int argc, char** argv)
             sV_y[i] = (pY + pV_x[i]*sin(pTheta) + pV_y[i]*cos(pTheta)); 
         }
 
-        gfx_triangle(sV_x[0], sV_y[0], sV_x[1], sV_y[1], sV_x[2], sV_y[2], 0xFF, 0xFF, 0xFF, 0x00);
+        gfx_triangle(sV_x[0], sV_y[0], sV_x[1], sV_y[1], sV_x[2], sV_y[2], 0x00, 0xFF, 0x00, 0x00);
         gfx_text_cursor(0,0);
         gfx_printf("Asteriods using libgfx, version 0.1\n");
         gfx_printf("Score: %d\n", score);

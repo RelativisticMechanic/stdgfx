@@ -1,7 +1,14 @@
 #ifndef __GFX_BACKEND_H
 #define __GFX_BACKEND_H
 
+/* Audio Compilation */
+#define GFX_AUDIO
+
 #include <SDL/SDL.h>
+
+#ifdef GFX_AUDIO
+#include <portaudio.h>
+#endif
 
 enum {
 	GFX_W = 0,
@@ -39,4 +46,8 @@ int			__gfx_backend_get_mouse_x(void);
 int			__gfx_backend_get_mouse_y(void);
 void 		__gfx_backend_resize(int w, int h, int bpp);
 uint32_t* 	__gfx_backend_direct_framebuffer(void);
+int 		__gfx_backend_play_sound(int channels, int sample_rate, int len, uint16_t* data);
+void 		__gfx_backend_stop_sound(int id);
+int			__gfx_backend_isplaying_sound(int id);
+
 #endif

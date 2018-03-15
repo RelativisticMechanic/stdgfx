@@ -23,8 +23,12 @@ typedef struct {
 } IMAGE;
 
 typedef struct {
-	int begin_ticks;
-} TIMER;
+	int channels;
+	int length;
+	int sample_rate;
+	int16_t* data;
+} SOUND;
+
 
 #include "__gfx_backend.h"
 
@@ -70,6 +74,12 @@ int 			gfx_mouse_y(void);
 int				gfx_elapsed(int ticks);
 
 void 			gfx_saveshot(char* filename);
+
+SOUND* 			gfx_load_sound(char* filename);
+int 			gfx_play_sound(SOUND* snd);
+void 			gfx_stop_sound(int id);
+int 			gfx_isplaying_sound(int id);
+void 			gfx_free_sound(SOUND* snd);
 
 extern const int gfx_font_height, gfx_font_width, gfx_bytes_per_char;
 extern int gfx_height, gfx_width, gfx_bpp;

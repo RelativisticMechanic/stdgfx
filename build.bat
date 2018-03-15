@@ -5,7 +5,7 @@ cd ./libgfx
 SET CC=gcc
 SET AR=ar
 SET CP=copy
-SET CFLAGS=-O3
+SET CFLAGS=-O3 -I..\portaudio\include
 SET RM=del
 
 %CC% %CFLAGS% -c libgfx.c -o libgfx.o
@@ -31,12 +31,14 @@ SET RM=del
 %CC% %CFLAGS% -c gfx_text_cursor.c -o gfx_text_cursor.o
 %CC% %CFLAGS% -c gfx_resize.c -o gfx_resize.o
 %CC% %CFLAGS% -c gfx_saveshot.c -o gfx_saveshot.o
+%CC% %CFLAGS% -c gfx_audio.c -o gfx_audio.o
 
 %CC% %CFLAGS% -c __gfx_backend.c -o __gfx_backend.o
 
 %AR% -rvs libgfx.a *.o
 %CP% stdgfx.h ..\include
 %CP% __gfx_backend.h ..\include
+%CP% ..\portaudio\include\*.h ..\include
 %CP% libgfx.a ..\lib
 %RM% *.o
 pause

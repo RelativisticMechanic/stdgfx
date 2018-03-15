@@ -152,3 +152,18 @@ int __gfx_backend_get_mouse_y(void)
 {
 	return mouse_coords[1];
 }
+
+int 		__gfx_backend_play_sound(int channels, int sample_rate, int len, uint16_t* data)
+{
+	#ifdef GFX_AUDIO
+	
+	#endif
+}
+void 		__gfx_backend_stop_sound(int id)
+{
+
+}
+int			__gfx_backend_isplaying_sound(int id)
+{
+
+}
