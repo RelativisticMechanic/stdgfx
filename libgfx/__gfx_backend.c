@@ -7,22 +7,26 @@ int mouse_coords[2] = { 0 };
 
 int __gfx_backend_init(void)
 {
-  if(SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-    fprintf(stderr, "sdl failed to init: %s\n", SDL_GetError());
-    return -1;
-  }
+  	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) 
+  	{
+		fprintf(stderr, "sdl failed to init: %s\n", SDL_GetError());
+		return -1;
+	}
+
+	#ifdef GFX_AUDIO
+	audio_interface_init();
+	#endif
 	atexit(SDL_Quit);
-  fprintf(stdout, "stdgfx: backend initialization complete.\n");
 	inkeys = SDL_GetKeyState(NULL);
 	SDL_PumpEvents();
-  return 0;
+ 	return 0;
 }
 
 void __gfx_backend_screen(int w, int h, int bpp)
 {
-  gfx_surface = SDL_SetVideoMode(w, h, bpp, SDL_SWSURFACE);
+	gfx_surface = SDL_SetVideoMode(w, h, bpp, SDL_SWSURFACE | SDL_NOFRAME);
 	if(gfx_surface == NULL)
-   fprintf(stderr, "error setting video mode: %s\n", SDL_GetError());
+	fprintf(stderr, "error setting video mode: %s\n", SDL_GetError());
 }
 
 void __gfx_backend_resize(int w, int h, int bpp)
@@ -32,22 +36,22 @@ void __gfx_backend_resize(int w, int h, int bpp)
 
 void __gfx_backend_set_caption(const char* caption)
 {
-  SDL_WM_SetCaption(caption, caption);
+ 	SDL_WM_SetCaption(caption, caption);
 }
 
 void __gfx_backend_clear(int r, int g, int b, int a)
 {
-  SDL_FillRect(gfx_surface, NULL, __gfx_backend_color32(r, g, b, a));
+ 	SDL_FillRect(gfx_surface, NULL, __gfx_backend_color32(r, g, b, a));
 }
 
 uint32_t __gfx_backend_color32(int r, int g, int b, int a)
 {
-  return SDL_MapRGBA(gfx_surface->format, r, g, b, a);
+ 	return SDL_MapRGBA(gfx_surface->format, r, g, b, a);
 }
 
 void __gfx_backend_flush(void)
 {
-  SDL_UpdateRect(gfx_surface, 0, 0, 0, 0);
+ 	SDL_UpdateRect(gfx_surface, 0, 0, 0, 0);
 }
 
 void __gfx_backend_input(void)
@@ -123,6 +127,7 @@ int __gfx_backend_ticks(void)
 void __gfx_backend_sleep(int s) {
   SDL_Delay(s);
 }
+
 void __gfx_backend_wait_for_exit(void)
 {
 	// wait for input
@@ -153,17 +158,23 @@ int __gfx_backend_get_mouse_y(void)
 	return mouse_coords[1];
 }
 
-int 		__gfx_backend_play_sound(int channels, int sample_rate, int len, uint16_t* data)
+int __gfx_backend_play_sound(int channels, int sample_rate, int len, uint16_t* data)
 {
 	#ifdef GFX_AUDIO
-	
+	return audio_interface_play_sound(channels, sample_rate, len, data);
 	#endif
 }
-void 		__gfx_backend_stop_sound(int id)
+void __gfx_backend_stop_sound(int id)
 {
-
+	#ifdef GFX_AUDIO
+	return audio_interface_stop_sound(id);
+	#endif
 }
-int			__gfx_backend_isplaying_sound(int id)
+int	__gfx_backend_isplaying_sound(int id)
 {
-
+	#ifdef GFX_AUDIO
+	return audio_interface_isplaying(id);
+	#else
+		return 0;
+	#endif
 }

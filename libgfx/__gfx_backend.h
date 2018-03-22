@@ -7,7 +7,7 @@
 #include <SDL/SDL.h>
 
 #ifdef GFX_AUDIO
-#include <portaudio.h>
+#include "pa_interface.h"
 #endif
 
 enum {

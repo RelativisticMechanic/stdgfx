@@ -8,7 +8,7 @@
 #define pVel_max 300.0f
 #define pVel_theta 3.0f
 
-#define stMax 256
+#define stMax 1024
 // Asteroid properties
 #define aVerts 20
 #define aRadius 80.0f
@@ -29,6 +29,9 @@ double pVel_x = 0.01f;
 double pVel_y = 0.0f;
 
 int score = 0;
+
+// Theme id
+int theme_id = 0;
 
 // Angle made by the player with the horizontal axis
 double pTheta = 0.1f;
@@ -220,6 +223,7 @@ void reset_game(void)
 {
     free(asteroids);
     free(bullets);
+    gfx_stop_sound(theme_id);
     asteroids = NULL;
     bullets = NULL;
     nAsteroids = 0;
@@ -251,6 +255,7 @@ int gfx_main(int argc, char** argv)
     gfx_resize(800, 600, 32);
     gfx_pixel_wrap(1);
     
+    SOUND* theme = gfx_load_sound("./quake2.ogg");
     IMAGE* logo = gfx_load_image("./asteroids.png");
 
     pX = gfx_width / 2;
@@ -287,6 +292,8 @@ int gfx_main(int argc, char** argv)
 
             if(gfx_iskey(GFX_CTRL))
             {
+                // PLAY IT
+                theme_id = gfx_play_sound(theme);
                 game_started = true;
             }
             gfx_update();
@@ -352,7 +359,8 @@ int gfx_main(int argc, char** argv)
             if(starX[i] < 0) starX[i] += gfx_width;
             if(starY[i] < 0) starY[i] += gfx_height;
             
-            gfx_pixel(starX[i], starY[i], 0xFF, 0xFF, 0xFF, 0xFF);
+            int star_color = 0xFF - random_range(100, 150);
+            gfx_pixel(starX[i], starY[i], star_color, star_color, star_color, 0xFF);
             // Make the star move with the player
             starX[i] += -pVel_x * time_elapsed;
             starY[i] += -pVel_y * time_elapsed;

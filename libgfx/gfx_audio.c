@@ -10,6 +10,7 @@ SOUND* gfx_load_sound(char* filename)
     SOUND* snd = calloc(1, sizeof(SOUND));
     // Decode to PCM
     snd->length = stb_vorbis_decode_filename(filename, &snd->channels, &snd->sample_rate, &snd->data);
+    fprintf(stderr, "sample rate from stb_vorbis: %d\n", snd->sample_rate);
     return snd;
 }
 
