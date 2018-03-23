@@ -40,21 +40,21 @@
 
     <h2>IV. Services</h2>
 
-    <h3 align="left">int gfx_init(void)</h3>
-    <b>description</b>: Initializae the GFX library (note: this must be called by the implementation's main and should not be used by the program!)<br>
-    <b>arguments:</b>: none.<br>
-    <b>return value:</b> reserved<br>
-
-    <h3 align="left">void gfx_ok(int test, const char* fmt, ...);</h3>
+    <pre><h3 align="left">void gfx_ok(int test, const char* fmt, ...);</h3></pre>
     <b>description</b>: if <i>test</i> evaluates to 1, shutdown, and exit with <i>EXIT_FAILURE</i>, printing message given by <i>fmt</i> to <i>stderr</i> otherwise return<br>
     <b>arguments:</b>: an expression as <i>test</i>, <i>fmt</i> as format, exactly how you would pass to <b>printf</b><br>
-    <b>return value:</b>none<br>
+    <b>return value: </b>none<br>
 
-    <h3 align="left">void			gfx_resize(int w, int h, int bpp);</h3>
+    <pre><h3 align="left">void gfx_resize(int w, int h, int bpp);</h3></pre>
     <b>description</b>: resize the output window to a newer resolution given by <i>w</i> x <i>h</i> x <i>bpp</i><br>
     <b>arguments:</b>: <i>w</i> - newer screen width, <i>h</i> - newer screen height, <i>bpp</i> - bits per pixel, 32 is to be accepted, other values are implementation defined.</b><br>
     <b>return value:</b> none<br>
 
+    <pre>uint32_t gfx_color(int r, int g, int b, int a);</pre>
+    <b>description</b>: Return a 32-bit color value constructed from the Red, Green, Blue and alpha channel. This 32-bit
+    value must be of the same format as the <i>native</i> framebuffer<br>
+    <b>arguments:</b>: <i>w</i> - newer screen width, <i>h</i> - newer screen height, <i>bpp</i> - bits per pixel, 32 is to be accepted, other values are implementation defined.</b><br>
+    <b>return value:</b> none<br>
     </body>
     </font>
 </html>

@@ -1,12 +1,13 @@
 @echo off
 
-cd ./libgfx
-
 SET CC=gcc
 SET AR=ar
 SET CP=copy
-SET CFLAGS=-O2 -I..\portaudio\include
+SET CFLAGS=-O2 -I..\include
 SET RM=del
+SET CD=cd
+
+%CD% ./libgfx
 
 %CC% %CFLAGS% -c pa_interface.c -o pa_interface.o
 
@@ -38,12 +39,21 @@ SET RM=del
 %CC% %CFLAGS% -c __gfx_backend.c -o __gfx_backend.o
 
 %AR% -rvs libgfx.a *.o
-%CP% stdgfx.h ..\include
-%CP% __gfx_backend.h ..\include
-%CP% pa_interface.h ..\include\
+
+REM Copy headers
+REM Portaudio and SDL headers
 %CP% ..\portaudio\include\*.h ..\include
+%CP% ..\sdl-1.2\include\*.h ..\include\
+
+REM Copy the library
 %CP% libgfx.a ..\lib
-%CP% ..\portaudio\lib\.libs\libportaudio.dll.a ..\lib 
+
 %RM% *.o
-CD ..
+%CD% ..
+
+REM Merge libraries now
+%CD% lib
+%AR% -rcT ./libgfx1.a ./libgfx.a ./libportaudio.dll.a ./libSDLmain.a ./libSDL.dll.a 
+
+%CD% ..
 pause

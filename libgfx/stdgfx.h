@@ -30,7 +30,7 @@ typedef struct {
 } SOUND;
 
 
-#include "__gfx_backend.h"
+#include <__gfx_backend.h>
 
 int 			gfx_init(void);
 void 			gfx_ok(int test, const char* fmt, ...);

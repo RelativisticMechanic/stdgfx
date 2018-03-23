@@ -5,7 +5,7 @@ This is an under-development graphics library for the C programming language
 that aims to make development and prototyping on C/C++ easy as pie! C has always
 lacked a proper graphics interface, and although things like SDL, and OpenGL exist
 they always have a large learning curve attached to them which makes beginners run
-away. <br>
+away. Recently, basic audio support for playing vorbis OGG files has been added as well!<br>
 
 Along with this, most C courses do not approach into graphics because, you know,
 C is supposed to be boring! All you may do is printf to the terminal and nothing else! <br>

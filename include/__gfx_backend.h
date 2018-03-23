@@ -4,10 +4,10 @@
 /* Audio Compilation */
 #define GFX_AUDIO
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #ifdef GFX_AUDIO
-#include "pa_interface.h"
+#include <pa_interface.h>
 #endif
 
 enum {
